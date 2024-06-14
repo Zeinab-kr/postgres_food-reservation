@@ -16,3 +16,33 @@ def connect():
     except (Exception, Error) as error:
         print("Error while connecting to PostgreSQL", error)
         return None
+
+
+# Function to add a new student to the database with data validation checks
+def add_student(student_id, major, date_of_birth, first_name, last_name, balance):
+    if student_id <= 0:
+        print("Error: Student ID must be a positive integer.")
+        return False
+
+    if balance < 0:
+        print("Error: Balance must be a non-negative number.")
+        return False
+
+    connection = connect()
+    if connection is None:
+        return False
+
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute(
+            "INSERT INTO students (studentID, major, date_of_birth, first_name, last_name, balance) VALUES (%s, %s, %s, %s, %s, %s)",
+            (student_id, major, date_of_birth, first_name, last_name, balance))
+        connection.commit()
+    except Exception as e:
+        print(f"Error: {e}")
+        return False
+
+    cursor.close()
+    connection.close()
+    return True
