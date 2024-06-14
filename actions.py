@@ -95,3 +95,22 @@ def add_food(name, date, price, inventory):
     connection.close()
     return food_id
 
+
+# Function to remove a food item from the database
+def remove_food(food_id):
+    connection = connect()
+    if connection is None:
+        return False
+
+    cursor = connection.cursor()
+    try:
+        cursor.execute("DELETE FROM foods WHERE ID = %s", (food_id,))
+        connection.commit()
+    except Exception as e:
+        print(f"Error: {e}")
+        return False
+
+    cursor.close()
+    connection.close()
+    return True
+
