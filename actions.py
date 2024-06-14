@@ -46,3 +46,22 @@ def add_student(student_id, major, date_of_birth, first_name, last_name, balance
     cursor.close()
     connection.close()
     return True
+
+
+# Function to remove a student from the database
+def remove_student(student_id):
+    connection = connect()
+    if connection is None:
+        return False
+
+    try:
+        cursor = connection.cursor()
+        cursor.execute("DELETE FROM students WHERE studentID = %s", (int(student_id),))
+        connection.commit()
+    except Exception as e:
+        print(f"Error: {e}")
+        return False
+
+    cursor.close()
+    connection.close()
+    return True
