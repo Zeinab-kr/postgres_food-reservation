@@ -65,3 +65,33 @@ def remove_student(student_id):
     cursor.close()
     connection.close()
     return True
+
+
+# Function to add a new food item to the database with data validation checks
+def add_food(name, date, price, inventory):
+    if not isinstance(price, (int, float)) or price < 0:
+        print("Error: Price must be a non-negative number.")
+        return False
+
+    if not isinstance(inventory, int) or inventory < 0:
+        print("Error: Inventory must be a non-negative integer.")
+        return False
+
+    connection = connect()
+    if connection is None:
+        return False
+
+    try:
+        cursor = connection.cursor()
+        cursor.execute("INSERT INTO foods (name, date, price, inventory) VALUES (%s, %s, %s, %s) RETURNING ID",
+                       (name, date, price, inventory))
+        food_id = cursor.fetchone()[0]
+        connection.commit()
+    except Exception as e:
+        print(f"Error: {e}")
+        return False
+
+    cursor.close()
+    connection.close()
+    return food_id
+
