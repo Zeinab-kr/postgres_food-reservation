@@ -1,12 +1,13 @@
 import psycopg2
 from psycopg2 import Error
+import datetime
 
 
 def get_current_date():
     current_date = datetime.datetime.now().strftime('%Y-%m-%d')
     return current_date
 
-    
+
 # Function to connect to the PostgreSQL database
 def connect():
     try:
