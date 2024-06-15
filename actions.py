@@ -186,4 +186,52 @@ def update_balance(studentID, amount):
     connection.close()
 
     return True
+
+
+# Function to view all students in the database
+def view_all_students():
+    connection = connect()
+    if connection is None:
+        return None
+
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM students")
+    students = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    return students
+
+
+# Function to view all foods in the database
+def view_all_foods():
+    connection = connect()
+    if connection is None:
+        return None
+
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM foods")
+    foods = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    return foods
+
+
+# Function to view all reservations in the database
+def view_all_reservations():
+    connection = connect()
+    if connection is None:
+        return None
+
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM reservations")
+    reservations = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    return reservations
     
