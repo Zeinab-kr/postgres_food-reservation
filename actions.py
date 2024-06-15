@@ -114,3 +114,40 @@ def remove_food(food_id):
     connection.close()
     return True
 
+
+# Function to make a food reservation with data validation checks
+def make_reservation(student_id, food_id):
+    if student_id <= 0 or food_id <= 0:
+        print("Error: Student ID and Food ID must be positive integers.")
+        return False
+
+    connection = connect()
+    if connection is None:
+        return False
+
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT price FROM foods WHERE ID = %s", (food_id,))
+    price = cursor.fetchone()[0]
+    connection.commit()
+    print(student_id)
+    print(price)
+    cursor.execute("SELECT balance FROM students WHERE studentID = %s", (student_id,))
+    balance = cursor.fetchone()[0]
+    print(balance)
+    if balance - price < 0:
+        print("No balance!")
+        return False
+
+    cursor.execute("UPDATE foods SET inventory = inventory - 1 WHERE ID = %s", (food_id,))
+    cursor.execute("INSERT INTO reservations (studentID, foodID) VALUES (%s, %s) RETURNING ID", (student_id, food_id))
+    reservation_id = cursor.fetchone()[0]
+    connection.commit()
+    
+    update_balance(student_id, 0 - price)
+
+    cursor.close()
+    connection.close()
+
+    return reservation_id
+
