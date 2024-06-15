@@ -152,6 +152,39 @@ def make_reservation(student_id, food_id):
     return reservation_id
 
 
+# Function to handle changes in reservations
+def handle_reservation_changes(choice, source_reservation_id, destination_reservation_id, date):
+    connection = connect()
+    if connection is None:
+        return False
+
+    cursor = connection.cursor()
+
+    # making new reservation
+    if choice == "1":
+        cursor.execute("INSERT INTO transactions (srcReservationID, dstReservationID, date) VALUES (NULL, %s, %s)",
+                       (destination_reservation_id, date,))
+
+        # Case 2: Cancelling a  reservation
+    elif choice == "2":
+        cursor.execute("INSERT INTO transactions (srcReservationID, dstReservationID, date) VALUES (%s, NULL, %s)",
+                       (source_reservation_id, date,))
+        cursor.execute("UPDATE reservations SET status = 'cancelled' WHERE ID = %s", (source_reservation_id,))
+
+        # Case 3: Changing the reservation
+    elif choice == "3":
+        cursor.execute("INSERT INTO transactions (srcReservationID, dstReservationID, date) VALUES (%s, %s, %s)",
+                       (source_reservation_id, destination_reservation_id, date))
+        cursor.execute("UPDATE reservations SET status = 'cancelled' WHERE ID = %s", (source_reservation_id,))
+
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+
+    return True
+
+    
 def return_price(studentID, source_reservation_id):
     connection = connect()
     if connection is None:
@@ -234,4 +267,3 @@ def view_all_reservations():
     connection.close()
 
     return reservations
-    
