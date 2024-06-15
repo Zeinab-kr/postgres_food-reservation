@@ -170,3 +170,20 @@ def return_price(studentID, source_reservation_id):
     cursor.close()
     connection.close()
     return True
+
+
+# Function to update the balance of a student
+def update_balance(studentID, amount):
+    connection = connect()
+    if connection is None:
+        return False
+
+    cursor = connection.cursor()
+    cursor.execute("UPDATE students SET balance = balance + %s WHERE studentID = %s", (amount, int(studentID)))
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+
+    return True
+    
