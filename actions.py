@@ -2,6 +2,11 @@ import psycopg2
 from psycopg2 import Error
 
 
+def get_current_date():
+    current_date = datetime.datetime.now().strftime('%Y-%m-%d')
+    return current_date
+
+    
 # Function to connect to the PostgreSQL database
 def connect():
     try:
@@ -184,7 +189,7 @@ def handle_reservation_changes(choice, source_reservation_id, destination_reserv
 
     return True
 
-    
+
 def return_price(studentID, source_reservation_id):
     connection = connect()
     if connection is None:
