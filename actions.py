@@ -151,3 +151,22 @@ def make_reservation(student_id, food_id):
 
     return reservation_id
 
+
+def return_price(studentID, source_reservation_id):
+    connection = connect()
+    if connection is None:
+        return False
+
+    cursor = connection.cursor()
+    foodID_old = cursor.execute("SELECT foodID FROM reservations WHERE ID = %s",
+                                           (int(source_reservation_id),))
+    price_old = cursor.execute("SELECT price FROM foods WHERE ID = %s", (foodID_old,))
+    print(foodID_old)
+    print(source_reservation_id)
+    print(price_old)
+    cursor.execute("UPDATE students SET balance = balance + %s WHERE studentID = %s", (price_old, studentID))
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+    return True
